@@ -2,7 +2,7 @@
 _Run picoclaw securely without any dedicated mac-mini, hostinger or gpu._
 <p align="center">
     <picture>
-        <img width="703" height="344" alt="picoclaw-webtop-title-logo" src="./docs/openclaw-webtop-title-logo.png" />
+        <img width="344" height="344" alt="picoclaw-webtop-title-logo" src="./docs/picoclaw-webtop-title-logo.png" />
     </picture>
 </p>
 
@@ -44,7 +44,7 @@ Perfect for:
 - Students / hackers / evaluators
 - Anyone who wants to “brew their lobster” securely on free cloud credits
 
-## 🚀 Quick Start (15–20 minutes)
+## 🚀 Quick Start (Less than 20 minutes ~ mainly docker pull)
 
 1. **Open this repository in a GitHub Codespace** (big green “Code” button → Codespaces → New)
    <img width="703" alt="launch-codespace" src="./docs/launch-codespace.png">
@@ -57,22 +57,23 @@ Perfect for:
    _In the Codespaces **Ports** tab, open the forwarded WebTop URL shown for the desktop service._
 
 5. Inside the WebTop desktop:
-- Open a terminal → `ollama signin` (sign in via the Chromium browser that pops up)
-- Pull a model: `ollama pull minimax-m2.7:cloud` (or any model you like)
-- Start the UI launcher: `picoclaw-launcher`
+- Start the UI launcher: `ppicoclaw-launcher -public -console`
 - Finally, open the browser inside WebTop and go to `http://localhost:18800`.
+- Use the Dashboard token to login
+- Go to Credentials > Google Antigravity and click on Browser OAuth to sign-in
+- Start gateway
+- Chat with Google Antigravity's Gemini
 
 You now have a **fully working PicoClaw instance running 100% in the cloud.**
 
 ## 🔧 Features
 
 - **Zero local install** — everything runs in browser via GitHub Codespaces
-- **Free-tier friendly** — uses Ollama daily cloud credits + NVIDIA Build API fallback
+- **Free-tier friendly** — from Google Antigravity's Gemini
 - **Persistent config** — if docker volume backup and restore after Codespace recreation
 - **Easy backup/restore** — `make backup` / `make restore`
 - **One-command everything** — powerful Makefile + clean `docker-compose.yml`
-- **Auto-start Ollama** — custom init script on WebTop boot
-- **NVIDIA Build fallback** built-in
+- **Auto-start Ollama** — custom init script on WebTop boot (if you want to use cloud credits)
 - **Colima / local Docker support** ready
 
 ## 🔒 Security: Protected by GitHub Authentication
@@ -128,31 +129,9 @@ make docker-build            # especially if you modified the ./docker/Dockerfil
 make start-locally-baked     # start from your local bake image
 ```
 
-### NVIDIA Build API as Free Fallback Model (Optional but Recommended)
-NVIDIA offers free inference endpoints for powerful models like Moonshot AI's Kimi K2 (e.g., kimi-k2-instruct) through their Build platform. These make an excellent low-cost or zero-cost fallback when your primary model hits rate limits or goes down.
-
-#### Step-by-Step Setup
-- Go to [NVIDIA Build](https://build.nvidia.com/) and sign in (free NVIDIA Developer account required).
-- Navigate to the Models tab and find a Free Endpoint. Good choices: `moonshotai/kimi-k2-instruct`
-- Click on the model. This opens a chat interface.
-- Click the **View Code** button (usually top-right).
-- In the "Copy Code to Make an API Request" panel:
-  - Click **Generate API Key** — the key will automatically appear in the code sample.
-  - Copy the entire Python code snippet.
-- Paste the code into a chat with PicoClaw and use this prompt:
-```
-Hey, here's the Python code from NVIDIA Build to call an API with a model (my API key already included). 
-1. Test the code to make sure it works.
-2. Configure this model as a fallback for my primary model.
-```
-- PicoClaw should automatically detect the OpenAI-compatible endpoint, extract the key, and set it up as a fallback.
-- _Screenshot of the NVIDIA Build API setup flow coming soon._
-
-
 ## ⚠️ Current Limitations (honest)
 
 - GitHub Codespaces free tier has monthly limits (great for testing, less ideal for 24/7 as Codespace auto-shutdown during inactivity)
-- Ollama cloud [credits](https://ollama.com/settings) are daily — heavy use will push you to paid/local models. Or if you have multiple accounts, just `ollama signout` and `ollama signin` with a different account.
 - Browser desktop has slight latency vs native (expected). You can shutdown your codespace and [change](https://docs.github.com/en/codespaces/customizing-your-codespace/changing-the-machine-type-for-your-codespace) to 4-core codespace to improve responsiveness or the need to run heavy applications.
 
 <!--
