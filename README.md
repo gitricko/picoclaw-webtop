@@ -147,7 +147,7 @@ Hey, here's the Python code from NVIDIA Build to call an API with a model (my AP
 2. Configure this model as a fallback for my primary model.
 ```
 - PicoClaw should automatically detect the OpenAI-compatible endpoint, extract the key, and set it up as a fallback.
-<img width="703" alt="End Results" src="./docs/nvidia-build-api.png">
+- _Screenshot of the NVIDIA Build API setup flow coming soon._
 
 
 ## ⚠️ Current Limitations (honest)
