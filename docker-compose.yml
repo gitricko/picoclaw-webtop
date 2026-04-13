@@ -31,28 +31,13 @@ services:
       # Optional: Access the Webtop GUI on port 3001 (https)
       - 3001:3001
       # picoclaw specific ports (adjust as needed)
-      - 18789:18789
+      - 18800:18800
     # Recommended to prevent modern web browsers from crashing
     shm_size: "1gb" 
     
     # Ensures the container restarts automatically unless you explicitly stop it
     restart: unless-stopped
 
-    networks:
-      - picoclaw-webtop-net
-
-  webai-api:
-    image: ghcr.io/leolionart/webai-to-api:latest
-    container_name: webai-api
-    restart: unless-stopped
-    ports:
-      - "6969:6969"
-    profiles:
-      - webai-api
-    environment:
-      - PYTHONPATH=/app/src
-      - CONFIG_PATH=/app/data/config.conf
-    command: uvicorn app.main:app --host 0.0.0.0 --port 6969 --workers 3 --log-level info
     networks:
       - picoclaw-webtop-net
 
