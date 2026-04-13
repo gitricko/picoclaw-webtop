@@ -15,8 +15,9 @@ services:
       - PUID=${DOCKER_PUID:-501}
       - PGID=${DOCKER_PGID:-20}
       # Set your timezone
-      - TZ=America/New_York 
-      - SUBFOLDER=/ # Optional: for reverse proxies
+      - TZ=America/New_York
+      # Optional: for reverse proxies
+      - SUBFOLDER=/
     
     volumes:
       # Change /path/to/data to the directory on your host for persistent config/files
