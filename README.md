@@ -54,7 +54,7 @@ Perfect for:
    ```
    (or `make start-locally-baked` if you prefer a pre-built image)
 4. Wait ~60 seconds. When the web desktop URL appears in the Codespace Ports tab, click it.
-   <img width="703" alt="launch-webtop-via-ports" src="./docs/launch-webtop-via-ports.png">
+   _In the Codespaces **Ports** tab, open the forwarded WebTop URL shown for the desktop service._
 
 5. Inside the WebTop desktop:
 - Open a terminal → `ollama signin` (sign in via the Chromium browser that pops up)
