@@ -28,9 +28,6 @@ start:
 	docker compose up -d
 	docker compose logs -f
 
-start-webai-api:
-	docker compose --profile webai-api up -d
-	docker compose --profile webai-api logs -f
 stop:
 	docker compose down
 
