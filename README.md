@@ -63,7 +63,6 @@ Perfect for:
 - Finally, open the browser inside WebTop and go to `http://localhost:18800`.
 
 You now have a **fully working PicoClaw instance running 100% in the cloud.**
-   <img width="703" alt="End Results" src="./docs/working-openclaw.png">
 
 ## 🔧 Features
 
