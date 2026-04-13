@@ -7,7 +7,7 @@ _Run picoclaw securely without any dedicated mac-mini, hostinger or gpu._
 </p>
 
 <p align="center">
-  <strong>Brew your lobster securely without breaking your bank</strong>
+  <strong>Brew your shrimp securely without breaking your bank</strong>
 </p>
 
 <p align="center">
