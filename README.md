@@ -30,7 +30,7 @@ Just open this repo in a GitHub Codespace and you get:
 - PicoClaw globally installed and ready to run
 - Persistent volume for your config, pairings, and PicoClaw ID
 
-When you’re ready to go production, simply move the same Docker setup to your own machine or VPS. *
+When you’re ready to go production, simply move the same Docker setup to your own machine or VPS.
 
 ## ✨ Why This Exists
 
