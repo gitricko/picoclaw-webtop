@@ -54,9 +54,10 @@ Perfect for:
    ```
    (or `make start-locally-baked` if you prefer a pre-built image)
 3. Wait ~60 seconds. When the web desktop URL appears in the Codespace Ports tab, click it. For a localhost env, just go to http://localhost:3000.
-    <img width="500" alt="launch-codespace" src="./docs/launch-webtop-via-ports.png">
 
-4. Inside the WebTop desktop:
+   <img width="500" alt="launch-codespace" src="./docs/launch-webtop-via-ports.png">
+
+5. Inside the WebTop desktop:
 - Start the UI launcher via terminal console: `picoclaw-launcher -console` or `picoclaw-launcher -public -console` if you want to access it from outside the Codespace.
 - You should see the `dashboard token` in the terminal. Launch a browser and login with the token via `http://localhost:18800`.
 - Go to Credentials > Google Antigravity and click on Browser OAuth to sign in with your Google account.
