@@ -1,5 +1,5 @@
 # 🦞 PicoClaw — Web Top
-_Run picoclaw securely without any dedicated mac-mini, hostinger or gpu._
+_Run PicoClaw securely without any dedicated Mac Mini, VPS, or GPU._
 <p align="center">
     <picture>
         <img width="344" height="344" alt="picoclaw-webtop-title-logo" src="./docs/picoclaw-webtop-title-logo.png" />
@@ -22,15 +22,15 @@ _Run picoclaw securely without any dedicated mac-mini, hostinger or gpu._
   </a>
 </p>
 
-**PicoClaw-WebTop** gives you a **fully functional PicoClaw personal AI assistant** in your browser in under 20 minutes — no powerful PC, no Docker on your machine, no GPU required.
+**PicoClaw-WebTop** gives you a **fully functional PicoClaw personal AI assistant** in your browser in under 3 minutes — no powerful PC, no Docker on your machine, no GPU required.
 
-Just open this repo in a GitHub Codespace and you get:
+Just open this repo in a GitHub Codespace, and you get:
 - A complete Ubuntu MATE desktop (WebTop)
-- Ollama server pre-installed and auto-started
+- Ollama server pre-installed and auto-started (if you want to use free monthly cloud credits)
 - PicoClaw globally installed and ready to run
-- Persistent volume for your config, pairings, and PicoClaw ID
+- Persistent volume for your configurations
 
-When you’re ready to go production, simply move the same Docker setup to your own machine or VPS.
+When you’re ready to go to production, simply move the same Docker setup to your own machine or VPS.
 
 ## ✨ Why This Exists
 
@@ -42,27 +42,27 @@ The only catch? You normally need a dedicated machine.
 Perfect for:
 - Trying PicoClaw risk-free
 - Students / hackers / evaluators
-- Anyone who wants to “brew their lobster” securely on free cloud credits
+- Anyone who wants to “brew their shrimp” securely on free LLM cloud credits / Gemini via Google Antigravity
 
-## 🚀 Quick Start (Less than 20 minutes ~ mainly docker pull)
+## 🚀 Quick Start (Less than 3 minutes ~ mainly docker pull)
 
 1. **Open this repository in a GitHub Codespace** (big green “Code” button → Codespaces → New)
-   <img width="703" alt="launch-codespace" src="./docs/launch-codespace.png">
-3. In the Codespace terminal run:
+   <img width="500" alt="launch-codespace" src="./docs/launch-codespace.png">
+2. In the Codespace terminal (or your local environment if you are not using Codespace) run:
    ```bash
    make start
    ```
    (or `make start-locally-baked` if you prefer a pre-built image)
-4. Wait ~60 seconds. When the web desktop URL appears in the Codespace Ports tab, click it.
-   _In the Codespaces **Ports** tab, open the forwarded WebTop URL shown for the desktop service._
+3. Wait ~60 seconds. When the web desktop URL appears in the Codespace Ports tab, click it. For a localhost env, just go to http://localhost:3000.
+    <img width="500" alt="launch-codespace" src="./docs/launch-webtop-via-ports.png">
 
-5. Inside the WebTop desktop:
-- Start the UI launcher: `ppicoclaw-launcher -public -console`
-- Finally, open the browser inside WebTop and go to `http://localhost:18800`.
-- Use the Dashboard token to login
-- Go to Credentials > Google Antigravity and click on Browser OAuth to sign-in
-- Start gateway
-- Chat with Google Antigravity's Gemini
+4. Inside the WebTop desktop:
+- Start the UI launcher via terminal console: `picoclaw-launcher -console` or `picoclaw-launcher -public -console` if you want to access it from outside the Codespace.
+- You should see the `dashboard token` in the terminal. Launch a browser and login with the token via `http://localhost:18800`.
+- Go to Credentials > Google Antigravity and click on Browser OAuth to sign in with your Google account.
+- Go to Models and set `gemini-flash` as your default model (star it).
+- The `Start Gateway` button in the top right corner will be enabled. Click it to start.
+- Go to Chat and start chatting with Google Antigravity's Gemini!
 
 You now have a **fully working PicoClaw instance running 100% in the cloud.**
 
