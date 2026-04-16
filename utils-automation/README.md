@@ -34,7 +34,7 @@ The headless automation requires a native Chromium browser installed on the host
 - **macOS**: `brew install chromium`
 
 ### Step 3: Run the Automation
-Execute the provided shell wrapper. This fully automates virtual environment setup in `/tmp` (ensuring it is scrubbed fresh and perfectly aligned after server reboots), installs native Playwright dependencies, and kicks off the Python runner automatically!
+Execute the provided shell wrapper. It sets up or reuses a virtual environment in `/tmp`, installs the Python requirements, and then kicks off the Python runner automatically. Make sure the required system/browser dependencies from Step 2 are already installed on the host.
 
 ```bash
 ./utils-automation/run_automation.sh
