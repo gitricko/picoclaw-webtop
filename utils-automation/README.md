@@ -18,6 +18,30 @@ These scripts provide a mechanism to securely obfuscate your password and mathem
 
 ---
 
+## ⚙️ How to Run
+
+### Step 1: Encrypt your Password
+Before attempting headless authentication, generate your `.enc` obfuscation payload so the script can punch through Google's password checks.
+```bash
+python utils-automation/encrypt_password.py
+```
+> [!IMPORTANT]
+> This requires you to input your exact Google Account email and Password.
+
+### Step 2: Ensure System Dependencies
+The headless automation requires a native Chromium browser installed on the host OS.
+- **Ubuntu/Debian**: `sudo apt install chromium-browser`
+- **macOS**: `brew install chromium`
+
+### Step 3: Run the Automation
+Execute the provided shell wrapper. This fully automates virtual environment setup in `/tmp` (ensuring it is scrubbed fresh and perfectly aligned after server reboots), installs native Playwright dependencies, and kicks off the Python runner automatically!
+
+```bash
+./utils-automation/run_automation.sh
+```
+
+---
+
 ## 🛡️ Risk & Threat Model
 
 Automating authentication inherently requires storing secrets. Because we implemented a custom OS-agnostic obfuscation layer rather than relying on native OS Keychains (like macOS Keychain or Linux Secret Service) to ensure portability and zero-prompt automation, it's vital to understand the exact security model.

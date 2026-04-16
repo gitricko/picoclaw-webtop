@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 import re
 import asyncio
 import base64
@@ -135,8 +136,9 @@ async def main():
             "viewport": {"width": 1280, "height": 900},
         }
 
-        if os.path.exists("/usr/bin/chromium"):
-            context_args["executable_path"] = "/usr/bin/chromium"
+        chromium_path = shutil.which("chromium") or shutil.which("chromium-browser")
+        if chromium_path:
+            context_args["executable_path"] = chromium_path
 
         context = await p.chromium.launch_persistent_context(**context_args)
         
