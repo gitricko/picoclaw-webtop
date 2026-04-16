@@ -15,14 +15,33 @@ IS_DEBUG = os.environ.get("DEBUG") is not None
 
 
 async def auto_click(page):
+
     """Attempt to automatically click through the Google OAuth flow"""
     # 0. Check if password is being requested
     try:
         password_input = await page.query_selector("input[type='password']")
         if password_input and await password_input.is_visible():
-            print("❌ ERROR: Google is asking for a password! Your session may have expired.")
-            print("   Please delete the '.google-oauth-automation/logged-in' file and authenticate again.")
-            return False
+            pwd_file = Path.home() / ".google-oauth-automation" / "password.txt"
+            if pwd_file.exists():
+                print("🔑 Google asked for a password. Injecting it from password.txt...")
+                pwd = pwd_file.read_text().strip()
+                await password_input.fill(pwd)
+                
+                # Press 'Next' to submit the password
+                next_btn = await page.query_selector("button span:has-text('Next')")
+                if next_btn:
+                    await next_btn.click()
+                else: 
+                    await password_input.press("Enter")
+                
+                print("✅ Password submitted.")
+                await asyncio.sleep(5)  # Wait for Google to process the password
+                return True
+            else:
+                print("❌ ERROR: Google is asking for a password! Your session may have expired.")
+                print("   To automate this, you can save your password in:")
+                print(f"   {pwd_file}")
+                return False
     except Exception:
         pass
         
@@ -73,7 +92,7 @@ async def main():
             "user_data_dir": str(PROFILE_DIR),
             "headless": False if (not is_headless) else True,
             "channel": "chrome",
-            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
             "args": [
                 "--disable-blink-features=AutomationControlled",
                 "--disable-extensions",
@@ -133,10 +152,37 @@ async def main():
                 # It has a "Browser OAuth" button.
                 # Use a locator to find the section and then the button to be extremely precise
                 # We also grab the last button in case there are multiple matching
-                button_loc = page.locator("div").filter(has_text="Google Antigravity").locator("button:has-text('Browser OAuth')").last
+                card_loc = page.locator("div").filter(has_text="Google Antigravity")
+                button_loc = card_loc.locator("button:has-text('Browser OAuth')").last
                 
                 # Wait for button to be visible
                 await button_loc.wait_for(timeout=10000)
+                
+                # Attempt to extract the email to use as a login_hint. 
+                # This drastically lowers the chance of Google asking for a password in Web Flows!
+                email_address = ""
+                try:
+                    email_text = await card_loc.get_by_text("Email:").inner_text(timeout=2000)
+                    if "Email:" in email_text:
+                        email_address = email_text.split("Email:")[1].strip()
+                except Exception:
+                    pass
+                
+                # Intercept network requests to catch the Google URL BEFORE it hits their servers
+                # This prevents Google from detecting the popup context
+                target_url = None
+                
+                async def intercept_google(route):
+                    nonlocal target_url
+                    url = route.request.url
+                    if "accounts.google.com" in url and target_url is None:
+                        target_url = url
+                        await route.abort()
+                    else:
+                        await route.fallback()
+                        
+                # Use fallback to safely ignore things we don't handle
+                await context.route("**/*", intercept_google)
                 
                 # Click the button and wait for the popup
                 print("👆 Clicking 'Browser OAuth' button...")
@@ -144,22 +190,61 @@ async def main():
                     await button_loc.click()
                 
                 popup = await popup_info.value
-                print(f"🪟 Popup opened: {popup.url}")
                 
-                # Flag to indicate success based on window close
+                # Wait for the intercepted request
+                for _ in range(20):
+                    if target_url:
+                        break
+                    await asyncio.sleep(0.5)
+                
+                # Clean up interception and close the flagged popup
+                await context.unroute("**/*", intercept_google)
+                await popup.close()
+                
+                if not target_url:
+                     print("❌ Failed to capture Google OAuth URL.")
+                     success = False
+                     
+                # Inject the login hint if we successfully parsed the email from the UI
+                if email_address and "login_hint=" not in target_url:
+                     target_url += f"&login_hint={email_address}"
+                     
+                print(f"🔒 Captured URL stealthily. Launching clean page for: {target_url[:50]}...")
+                
+                clean_page = await context.new_page()
+                
                 success = False
-                popup.on("close", lambda _: print("🪟 Popup closed!"))
+                async def on_framenavigated(frame):
+                    nonlocal success
+                    url = frame.url
+                    if url.startswith("http://localhost") or url.startswith("http://127.0.0.1"):
+                        success = True
+
+                clean_page.on("framenavigated", on_framenavigated)
+
+                try:
+                    await clean_page.goto(target_url, referer="http://localhost:18800/credentials")
+                except Exception as e:
+                    if "localhost" in str(e) or "127.0.0.1" in str(e) or "ERR_CONNECTION_REFUSED" in str(e):
+                        success = True
 
                 # loop until done
                 for _ in range(60): # 60 seconds max
-                    if popup.is_closed():
-                        print("✅ Headless auth completed! (Popup closed)")
-                        success = True
+                    if success:
+                        print("✅ Headless auth completed! (Redirect successful)")
                         break
+                    
+                    try:
+                        if clean_page.url.startswith("http://localhost") or clean_page.url.startswith("http://127.0.0.1"):
+                            print("✅ Headless auth completed! (URL check)")
+                            success = True
+                            break
+                    except:
+                        pass
                         
-                    # attempt auto clicking on the popup
+                    # attempt auto clicking on the clean_page
                     print("   Checking for account chooser or consent screen...")
-                    progress = await auto_click(popup)
+                    progress = await auto_click(clean_page)
                     if not progress:
                         print("🛑 Aborting headless flow due to password or security prompt.")
                         success = False
@@ -169,6 +254,11 @@ async def main():
                     
                 if not success:
                      print("⚠️ Timeout: Failed to reach completion automatically.")
+                     
+                try:
+                    await clean_page.close()
+                except:
+                    pass
              
         except Exception as e:
              print(f"❌ Error during automation: {e}")
