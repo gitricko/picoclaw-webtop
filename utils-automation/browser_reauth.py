@@ -87,8 +87,9 @@ async def auto_click(page):
         elif isinstance(exc, KeyError):
             print(f"❌ ERROR: Missing expected password data key during password handling: {exc}")
         else:
-            print(f"⚠️ Non-fatal error while handling Google password prompt: {exc}")
-        
+            # print(f"⚠️ Non-fatal error while handling Google password prompt: {exc}")
+            pass     
+    
     # 1. Click account if chooser is present
     try:
         # Give it a moment to load
