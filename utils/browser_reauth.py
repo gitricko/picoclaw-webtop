@@ -16,6 +16,16 @@ IS_DEBUG = os.environ.get("DEBUG") is not None
 
 async def auto_click(page):
     """Attempt to automatically click through the Google OAuth flow"""
+    # 0. Check if password is being requested
+    try:
+        password_input = await page.query_selector("input[type='password']")
+        if password_input and await password_input.is_visible():
+            print("❌ ERROR: Google is asking for a password! Your session may have expired.")
+            print("   Please delete the '.google-oauth-automation/logged-in' file and authenticate again.")
+            return False
+    except Exception:
+        pass
+        
     # 1. Click account if chooser is present
     try:
         # Give it a moment to load
@@ -42,6 +52,7 @@ async def auto_click(page):
     except Exception:
         pass
 
+    return True
 
 async def main():
     SERVICE_DIR.mkdir(parents=True, exist_ok=True)
@@ -148,7 +159,12 @@ async def main():
                         
                     # attempt auto clicking on the popup
                     print("   Checking for account chooser or consent screen...")
-                    await auto_click(popup)
+                    progress = await auto_click(popup)
+                    if not progress:
+                        print("🛑 Aborting headless flow due to password or security prompt.")
+                        success = False
+                        break
+                        
                     await asyncio.sleep(1)
                     
                 if not success:
