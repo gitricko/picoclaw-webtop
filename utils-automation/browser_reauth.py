@@ -74,7 +74,7 @@ async def auto_click(page):
                 return True
             else:
                 print("❌ ERROR: Google is asking for a password! Automate this by running:")
-                print("   python utils/encrypt_password.py")
+                print("   python utils-automation/encrypt_password.py")
                 return False
     except Exception as exc:
         import binascii
