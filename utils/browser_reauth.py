@@ -158,95 +158,45 @@ async def main():
                 # Wait for button to be visible
                 await button_loc.wait_for(timeout=10000)
                 
-                # Attempt to extract the email to use as a login_hint. 
-                # This drastically lowers the chance of Google asking for a password in Web Flows!
-                email_address = ""
-                try:
-                    email_text = await card_loc.get_by_text("Email:").inner_text(timeout=2000)
-                    if "Email:" in email_text:
-                        email_address = email_text.split("Email:")[1].strip()
-                except Exception:
-                    pass
-                
-                # Intercept network requests to catch the Google URL BEFORE it hits their servers
-                # This prevents Google from detecting the popup context
-                target_url = None
-                
-                async def intercept_google(route):
-                    nonlocal target_url
-                    url = route.request.url
-                    if "accounts.google.com" in url and target_url is None:
-                        target_url = url
-                        await route.abort()
-                    else:
-                        await route.fallback()
-                        
-                # Use fallback to safely ignore things we don't handle
-                await context.route("**/*", intercept_google)
-                
                 # Click the button and wait for the popup
                 print("👆 Clicking 'Browser OAuth' button...")
                 async with page.expect_popup() as popup_info:
                     await button_loc.click()
                 
                 popup = await popup_info.value
-                
-                # Wait for the intercepted request
-                for _ in range(20):
-                    if target_url:
-                        break
-                    await asyncio.sleep(0.5)
-                
-                # Clean up interception and close the flagged popup
-                await context.unroute("**/*", intercept_google)
-                await popup.close()
-                
-                if not target_url:
-                     print("❌ Failed to capture Google OAuth URL.")
-                     success = False
-                     
-                # Inject the login hint if we successfully parsed the email from the UI
-                if email_address and "login_hint=" not in target_url:
-                     target_url += f"&login_hint={email_address}"
-                     
-                print(f"🔒 Captured URL stealthily. Launching clean page for: {target_url[:50]}...")
-                
-                clean_page = await context.new_page()
+                print("🪟 Popup opened!")
                 
                 success = False
+
                 async def on_framenavigated(frame):
                     nonlocal success
                     url = frame.url
                     if url.startswith("http://localhost") or url.startswith("http://127.0.0.1"):
                         success = True
 
-                clean_page.on("framenavigated", on_framenavigated)
-
-                try:
-                    await clean_page.goto(target_url, referer="http://localhost:18800/credentials")
-                except Exception as e:
-                    if "localhost" in str(e) or "127.0.0.1" in str(e) or "ERR_CONNECTION_REFUSED" in str(e):
-                        success = True
+                popup.on("framenavigated", on_framenavigated)
+                popup.on("close", lambda _: print("🪟 Popup closed!"))
 
                 # loop until done
                 for _ in range(60): # 60 seconds max
-                    if success:
-                        print("✅ Headless auth completed! (Redirect successful)")
+                    if success or popup.is_closed():
+                        print("✅ Headless auth completed! (Redirect successful or Popup closed)")
+                        success = True
                         break
                     
                     try:
-                        if clean_page.url.startswith("http://localhost") or clean_page.url.startswith("http://127.0.0.1"):
+                        if popup.url.startswith("http://localhost") or popup.url.startswith("http://127.0.0.1"):
                             print("✅ Headless auth completed! (URL check)")
                             success = True
                             break
                     except:
                         pass
                         
-                    # attempt auto clicking on the clean_page
+                    # attempt auto clicking on the popup
                     print("   Checking for account chooser or consent screen...")
-                    progress = await auto_click(clean_page)
+                    progress = await auto_click(popup)
                     if not progress:
-                        print("🛑 Aborting headless flow due to password or security prompt.")
+                        print("🛑 Aborting headless flow.")
                         success = False
                         break
                         
@@ -254,11 +204,6 @@ async def main():
                     
                 if not success:
                      print("⚠️ Timeout: Failed to reach completion automatically.")
-                     
-                try:
-                    await clean_page.close()
-                except:
-                    pass
              
         except Exception as e:
              print(f"❌ Error during automation: {e}")
