@@ -8,6 +8,17 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
 
+try:
+    from utils.machine_id import get_machine_id
+except ModuleNotFoundError:
+    try:
+        from machine_id import get_machine_id
+    except ModuleNotFoundError:
+        import platform
+        import uuid
+        def get_machine_id():
+            return str(uuid.getnode())
+
 SERVICE_DIR = Path.home() / ".google-oauth-automation"
 PROFILE_DIR = SERVICE_DIR / "chrome-profile"
 LOGIN_FLAG = SERVICE_DIR / "logged-in"
@@ -24,7 +35,6 @@ async def auto_click(page):
         password_input = await page.query_selector("input[type='password']")
         if password_input and await password_input.is_visible():
             enc_file = Path.home() / ".google-oauth-automation" / "password.enc"
-            pwd_file = Path.home() / ".google-oauth-automation" / "password.txt"
             
             pwd = None
             if enc_file.exists():
@@ -36,17 +46,17 @@ async def auto_click(page):
                     email_key = matches[0].lower()
                     print(f"   🔓 Decrypting with discovered key: {email_key}")
                     enc_data = base64.b64decode(enc_file.read_text().strip())
-                    key_hash = hashlib.sha256(email_key.encode()).digest()
+                    
+                    machine_salt = get_machine_id()
+                    combined_key = f"{email_key}::{machine_salt}"
+                    key_hash = hashlib.sha256(combined_key.encode()).digest()
+                    
                     crypted = bytearray()
                     for i, char in enumerate(enc_data):
                         crypted.append(char ^ key_hash[i % len(key_hash)])
                     pwd = crypted.decode('utf-8')
                 else:
                     print("   ❌ Could not find the email address on the screen to unlock the password!")
-            
-            if not pwd and pwd_file.exists():
-                print("🔑 Injecting from plain password.txt... (Tip: Run encrypt_password.py for obfuscation)")
-                pwd = pwd_file.read_text().strip()
                 
             if pwd:
                 await password_input.fill(pwd)

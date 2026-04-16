@@ -3,9 +3,12 @@ import getpass
 from pathlib import Path
 import hashlib
 import base64
+from machine_id import get_machine_id
 
 def xor_crypt(data, key):
-    key_hash = hashlib.sha256(key.lower().encode()).digest()
+    machine_salt = get_machine_id()
+    combined_key = f"{key.lower()}::{machine_salt}"
+    key_hash = hashlib.sha256(combined_key.encode()).digest()
     crypted = bytearray()
     for i, char in enumerate(data):
         crypted.append(char ^ key_hash[i % len(key_hash)])
@@ -35,8 +38,8 @@ def main():
     out_file.write_text(enc_str)
     
     print(f"✅ Encrypted password saved to {out_file}")
-    print("   The automation script will now dynamically extract your email from")
-    print("   the Google login screen to secretly decrypt this on the fly.")
+    print("   🔒 Note: This encryption is salted with this machine's Hardware ID.")
+    print("      If this .enc file is moved to another computer, it will refuse to decrypt!")
 
 if __name__ == "__main__":
     main()
