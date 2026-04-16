@@ -76,8 +76,18 @@ async def auto_click(page):
                 print("❌ ERROR: Google is asking for a password! Automate this by running:")
                 print("   python utils/encrypt_password.py")
                 return False
-    except Exception:
-        pass
+    except Exception as exc:
+        import binascii
+        if isinstance(exc, binascii.Error):
+            print("❌ ERROR: Failed to decode the stored password from base64. Re-run:")
+            print("   python utils/encrypt_password.py")
+        elif isinstance(exc, UnicodeDecodeError):
+            print("❌ ERROR: Failed to decode the stored password as UTF-8 after decryption.")
+            print("   Re-run: python utils/encrypt_password.py")
+        elif isinstance(exc, KeyError):
+            print(f"❌ ERROR: Missing expected password data key during password handling: {exc}")
+        else:
+            print(f"⚠️ Non-fatal error while handling Google password prompt: {exc}")
         
     # 1. Click account if chooser is present
     try:
