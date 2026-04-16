@@ -1,4 +1,4 @@
-# PicoClaw Authentication Utilities
+# PicoClaw Provider Authentication Utilities
 
 This directory contains utility scripts designed to automate and enhance authentication flows for the PicoClaw project.
 

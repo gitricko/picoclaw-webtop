@@ -1,4 +1,4 @@
-# PicoClaw Web Authentication Utilities
+# PicoClaw Provider Authentication Automation
 
 > [!NOTE]
 > **Educational Purpose**: This project is created strictly for learning purposes to demonstrate advanced techniques in headless browser automation, navigating complex OAuth flows, and implementing localized, hardware-salted obfuscation.
