@@ -1,7 +1,7 @@
 # PicoClaw Provider Authentication Automation
 
 > [!NOTE]
-> **Educational Purpose**: This project is created strictly for learning purposes to demonstrate advanced techniques in headless browser automation, navigating complex OAuth flows, and implementing localized, hardware-salted obfuscation.
+> **Educational & Research Purpose**: This project is intended for research and educational purposes only. It demonstrates advanced techniques in headless browser automation, complex OAuth navigation, and hardware-salted obfuscation. Please use it responsibly and refrain from any commercial use.
 
 This directory contains advanced Playwright automation scripts designed to automatically handle Google OAuth login and re-authentication loops specifically for the PicoClaw Webtop interface. 
 
@@ -39,6 +39,22 @@ Execute the provided shell wrapper. This fully automates virtual environment set
 ```bash
 ./utils-automation/run_automation.sh
 ```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Force Visible Browser (Debug Mode)
+If the headless automation is failing, or if you need to manually intervene (e.g., to switch Google accounts or solve a CAPTCHA), you can force the script to run in a visible browser by setting the `DEBUG` environment variable:
+
+```bash
+DEBUG=1 ./utils-automation/run_automation.sh
+```
+
+When `DEBUG` is set, the script will:
+1.  Launch a **visible** Chromium instance.
+2.  Bypass the automatic headless flag.
+3.  Allow you to see and interact with the automation steps in real-time.
 
 ---
 
