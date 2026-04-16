@@ -63,7 +63,7 @@ When `DEBUG` is set, the script will:
 Automating authentication inherently requires storing secrets. Because we implemented a custom OS-agnostic obfuscation layer rather than relying on native OS Keychains (like macOS Keychain or Linux Secret Service) to ensure portability and zero-prompt automation, it's vital to understand the exact security model.
 
 ### 🔐 How the Encryption Works
-When you run `python utils/encrypt_password.py`:
+When you run `python utils-automation/encrypt_password.py`:
 1. It queries your operating system natively for a **Hardware UUID** (e.g., macOS `IOPlatformExpertDevice`, Linux `/etc/machine-id`, or Windows `MachineGuid`).
 2. It blends this unique machine identifier with your Google Email to form a highly specific Salt/Key.
 3. It uses a cryptographic XOR cipher to obfuscate your password with the SHA-256 hash of this key.
