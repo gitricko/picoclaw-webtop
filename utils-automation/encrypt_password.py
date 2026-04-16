@@ -39,7 +39,7 @@ def main():
     
     print(f"✅ Encrypted password saved to {out_file}")
     print("   🔒 Note: This encryption is salted with this machine's Hardware ID.")
-    print("      If this .enc file is moved to another computer, it will refuse to decrypt!")
+    print("      If this .enc file is moved to another computer, decryption will likely produce an invalid value rather than the original password.")
 
 if __name__ == "__main__":
     main()
