@@ -2,6 +2,8 @@ import sys
 import os
 import re
 import asyncio
+import base64
+import hashlib
 from pathlib import Path
 from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
@@ -21,10 +23,32 @@ async def auto_click(page):
     try:
         password_input = await page.query_selector("input[type='password']")
         if password_input and await password_input.is_visible():
+            enc_file = Path.home() / ".google-oauth-automation" / "password.enc"
             pwd_file = Path.home() / ".google-oauth-automation" / "password.txt"
-            if pwd_file.exists():
-                print("🔑 Google asked for a password. Injecting it from password.txt...")
+            
+            pwd = None
+            if enc_file.exists():
+                print("🔑 Found encrypted password file. Searching screen for your email to use as the key...")
+                page_text = await page.evaluate("document.body.innerText")
+                matches = re.findall(r"[\w\.-]+@[\w\.-]+\.\w+", page_text)
+                
+                if matches:
+                    email_key = matches[0].lower()
+                    print(f"   🔓 Decrypting with discovered key: {email_key}")
+                    enc_data = base64.b64decode(enc_file.read_text().strip())
+                    key_hash = hashlib.sha256(email_key.encode()).digest()
+                    crypted = bytearray()
+                    for i, char in enumerate(enc_data):
+                        crypted.append(char ^ key_hash[i % len(key_hash)])
+                    pwd = crypted.decode('utf-8')
+                else:
+                    print("   ❌ Could not find the email address on the screen to unlock the password!")
+            
+            if not pwd and pwd_file.exists():
+                print("🔑 Injecting from plain password.txt... (Tip: Run encrypt_password.py for obfuscation)")
                 pwd = pwd_file.read_text().strip()
+                
+            if pwd:
                 await password_input.fill(pwd)
                 
                 # Press 'Next' to submit the password
@@ -38,9 +62,8 @@ async def auto_click(page):
                 await asyncio.sleep(5)  # Wait for Google to process the password
                 return True
             else:
-                print("❌ ERROR: Google is asking for a password! Your session may have expired.")
-                print("   To automate this, you can save your password in:")
-                print(f"   {pwd_file}")
+                print("❌ ERROR: Google is asking for a password! Automate this by running:")
+                print("   python utils/encrypt_password.py")
                 return False
     except Exception:
         pass
