@@ -1,6 +1,11 @@
 #!/bin/bash
 SRC="/custom-cont-init.d/PicoClaw.desktop"
 
+if [ ! -r "$SRC" ]; then
+    echo "Error: source file $SRC is missing or not readable." >&2
+    exit 1
+fi
+
 mkdir -p /config/.config/autostart
 mkdir -p /config/Desktop
 chown abc:abc /config/.config/autostart
