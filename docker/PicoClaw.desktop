@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=mate-terminal --title="PicoClaw" -e "bash -c 'picoclaw-launcher -public -console; exec bash'"
+Name[en_US]=PicoClaw
+Name=PicoClaw
+GenericName[en_US.UTF-8]=PicoClaw Launcher
