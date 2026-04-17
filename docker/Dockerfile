@@ -23,10 +23,9 @@ COPY --from=ollama-bin --chown=abc:abc /usr/bin/ollama /usr/local/bin/ollama
 RUN mkdir -p /custom-cont-init.d
 RUN echo "runuser -l abc -c 'ollama serve &'" > /custom-cont-init.d/start-ollama.sh && \
    chmod +x /custom-cont-init.d/start-ollama.sh
-# RUN echo "rm -rf /config/.npm" >> /custom-cont-init.d/init-openclaw.sh && \
-#     echo "chown abc:abc -R  /usr/local/lib/node_modules &" >> /custom-cont-init.d/init-openclaw.sh && \
-#     echo "chown abc:abc -R  /usr/local/bin &" >> /custom-cont-init.d/init-openclaw.sh && \
-#     chmod +x /custom-cont-init.d/init-openclaw.sh
+
+COPY PicoClaw.desktop /custom-cont-init.d/PicoClaw.desktop
+COPY start-picoclaw.sh /custom-cont-init.d/start-picoclaw.sh
 
 EXPOSE 11434
 
