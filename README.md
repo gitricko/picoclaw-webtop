@@ -59,8 +59,8 @@ Perfect for:
    <img width="500" alt="launch-codespace" src="./docs/launch-webtop-via-ports.png">
 
 5. Inside the WebTop desktop:
-- Start the UI launcher via terminal console: `picoclaw-launcher -console` or `picoclaw-launcher -public -console` if you want to access it from outside the Codespace.
-- You should see the `dashboard token` in the terminal. Launch a browser and login with the token via `http://localhost:18800`.
+- PicoClaw's WebUI process is auto-started in terminal. (If not, start it using the PicoClaw desktop-icon)
+- You should see the `dashboard token` in the terminal. Login with the token via `http://localhost:18800` in WebTop
 - Go to Credentials > Google Antigravity and click on Browser OAuth to sign in with your Google account.
 - Go to Models and set `gemini-flash` as your default model (star it).
 - The `Start Gateway` button in the top right corner will be enabled. Click it to start.
