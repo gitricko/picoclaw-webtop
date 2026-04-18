@@ -38,7 +38,8 @@ COPY PicoClaw.desktop /custom-cont-init.d/PicoClaw.desktop
 COPY start-picoclaw.sh /custom-cont-init.d/start-picoclaw.sh
 
 # Install ModelRelay and start automatically when desktop loads
-RUN npm install -g modelrelay@${MODELRELAY_VERSION}
+RUN npm install -g modelrelay@${MODELRELAY_VERSION} && \
+    chown -R abc:abc /usr/local/lib/node_modules/modelrelay /usr/local/bin/modelrelay
 COPY ModelRelay.desktop /custom-cont-init.d/ModelRelay.desktop
 COPY start-modelrelay.sh /custom-cont-init.d/start-modelrelay.sh
 
