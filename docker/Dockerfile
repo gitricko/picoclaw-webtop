@@ -43,10 +43,5 @@ RUN npm install -g modelrelay@${MODELRELAY_VERSION} && \
 COPY ModelRelay.desktop /custom-cont-init.d/ModelRelay.desktop
 COPY start-modelrelay.sh /custom-cont-init.d/start-modelrelay.sh
 
-# RUN echo "rm -rf /config/.npm" >> /custom-cont-init.d/init-modelrelay.sh && \
-#     echo "chown abc:abc -R  /usr/local/lib/node_modules &" >> /custom-cont-init.d/init-modelrelay.sh && \
-#     echo "chown abc:abc -R  /usr/local/bin &" >> /custom-cont-init.d/init-modelrelay.sh && \
-#     chmod +x /custom-cont-init.d/init-modelrelay.sh
-
 EXPOSE 11434
 
