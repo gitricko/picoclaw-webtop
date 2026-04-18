@@ -65,6 +65,7 @@ Perfect for:
 - Go to Models and set `gemini-flash` as your default model (star it).
 - The `Start Gateway` button in the top right corner will be enabled. Click it to start.
 - Go to Chat and start chatting with Google Antigravity's Gemini!
+- **Alternative**: you can use `modelrelay` model to chat with any LLM provider that ModelRelay supports.
 
 You now have a **fully working PicoClaw instance running 100% in the cloud.**
 
@@ -77,6 +78,19 @@ You now have a **fully working PicoClaw instance running 100% in the cloud.**
 - **One-command everything** — powerful Makefile + clean `docker-compose.yml`
 - **Auto-start Ollama** — custom init script on WebTop boot (if you want to use cloud credits)
 - **Colima / local Docker support** ready
+- **Built-in ModelRelay** — intelligent API proxy for easy model switching
+
+## 🔄 ModelRelay: Intelligent API Proxy
+
+PicoClaw-WebTop comes pre-integrated with **[ModelRelay](https://github.com/ellipticmarketing/modelrelay)**, a lightweight bridge that transforms various LLM providers into a standard, OpenAI-compatible API.
+
+### Why it's a game-changer:
+- **Unified Interface**: Interact with Google Gemini, Anthropic Claude, or any other provider using the standard OpenAI client format.
+- **Smart Routing**: Pre-configured to use `openai/auto-fastest`, automatically selecting the most responsive model for your task.
+- **Zero-Touch Config**: On first boot, WebTop automatically injects ModelRelay into PicoClaw's model list. You just select the `modelrelay` model in the WebUI and start chatting.
+- **Developer Friendly**: Test different LLM backends without changing picoClaw's model config.
+
+ModelRelay API runs on `http://localhost:7352/v1` inside the WebTop environment and is automatically available to PicoClaw right out of the box. You can add more providers and models by using its webui at `http://localhost:7352`.
 
 ## 🔒 Security: Protected by GitHub Authentication
 
