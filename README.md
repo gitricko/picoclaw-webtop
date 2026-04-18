@@ -26,10 +26,10 @@ _Run PicoClaw securely without any dedicated Mac Mini, VPS, or GPU._
 
 Just open this repo in a GitHub Codespace, and you get:
 - A complete Ubuntu MATE desktop (WebTop)
-- Easiest configuration to your models via webui (eg: OpenAI or Gemini via built-in browser-oAuth)
-- Ollama server pre-installed and auto-started (if you want to use free monthly cloud credits)
 - PicoClaw globally installed and ready to run
-- Persistent volume for your configurations
+- [ModelRelay](https://github.com/ellipticmarketing/modelrelay) built-in and preconfigured with PicoClaw
+- Easiest configuration to your models via webui (eg: OpenAI or Gemini via built-in browser-oAuth)
+- Persistent volume for your configurations with backup and restore
 
 When you’re ready to go to production, simply move the same Docker setup to your own machine or VPS.
 
