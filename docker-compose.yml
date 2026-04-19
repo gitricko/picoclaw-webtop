@@ -33,6 +33,8 @@ services:
       - 3001:3001
       # picoclaw specific ports (adjust as needed)
       - 18800:18800
+      # modelrelay specific ports (adjust as needed)
+      - 7352:7352
     # Recommended to prevent modern web browsers from crashing
     shm_size: "1gb" 
     
