@@ -30,18 +30,17 @@ COPY --from=ollama-bin --chown=abc:abc /usr/bin/ollama /usr/local/bin/ollama
 
 # Start Ollama to start automatically when the desktop loads,
 RUN mkdir -p /custom-cont-init.d
-RUN echo "runuser -l abc -c 'ollama serve &'" > /custom-cont-init.d/start-ollama.sh && \
-   chmod +x /custom-cont-init.d/start-ollama.sh
+COPY --chown=abc:abc start-3-ollama.sh /custom-cont-init.d/start-ollama.sh
 
-COPY common.sh /custom-cont-init.d/common.sh
-COPY PicoClaw.desktop /custom-cont-init.d/PicoClaw.desktop
-COPY start-picoclaw.sh /custom-cont-init.d/start-picoclaw.sh
+COPY --chown=abc:abc common.sh /custom-cont-init.d/common.sh
+COPY --chown=abc:abc PicoClaw.desktop /custom-cont-init.d/PicoClaw.desktop
+COPY --chown=abc:abc start-1-picoclaw.sh /custom-cont-init.d/start-1-picoclaw.sh
 
 # Install ModelRelay and start automatically when desktop loads
 RUN npm install -g modelrelay@${MODELRELAY_VERSION} && \
     chown -R abc:abc /usr/local/lib/node_modules/modelrelay /usr/local/bin/modelrelay
-COPY ModelRelay.desktop /custom-cont-init.d/ModelRelay.desktop
-COPY start-modelrelay.sh /custom-cont-init.d/start-modelrelay.sh
+COPY --chown=abc:abc ModelRelay.desktop /custom-cont-init.d/ModelRelay.desktop
+COPY --chown=abc:abc start-2-modelrelay.sh /custom-cont-init.d/start-2-modelrelay.sh
 
 EXPOSE 11434
 
