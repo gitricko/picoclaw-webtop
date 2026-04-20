@@ -6,17 +6,21 @@ SRC="/custom-cont-init.d/ModelRelay.desktop"
 add_model_if_missing() {
     local file="$1"
 
-    jq '
-      if (.model_list | map(select(.model_name == "modelrelay")) | length) == 0 then
-        .model_list += [{
+    if ! jq -e '.model_list | any(.model_name == "modelrelay")' "$file" > /dev/null; then
+        echo "[start-2-modelrelay] Adding modelrelay model to $file"
+        jq '.model_list += [{
           "model_name": "modelrelay",
           "model": "openai/auto-fastest",
           "api_base": "http://localhost:7352/v1"
-        }]
-      else
-        .
-      end
-    ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+        }]' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+    fi
+
+    # Set modelrelay as defaullt for agents if not default was set
+    if jq -e '.agents.defaults.model_name | select(. == null or . == "")' "$file" > /dev/null; then
+        echo "[start-2-modelrelay] Setting modelrelay as defaults for agents in $file"
+        jq '.agents |= (. // {}) | .agents.defaults |= (. // {}) | .agents.defaults.model_name = "modelrelay"' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+    fi
+
 }
 
 # Prep nodejs npm for ModelRelay 
@@ -28,8 +32,8 @@ chown abc:abc -R  /usr/local/bin &
 sync_desktop_file "$SRC" "/config/.config/autostart/ModelRelay.desktop"
 sync_desktop_file "$SRC" "/config/Desktop/ModelRelay.desktop"
 
-# Add modelrelay model to picoclaw's config
-# /config/picoclaw/config.json 
+# Add modelrelay model to picoclaw's config as soon as it appears, and set it as default for agents if no default was set
+# /config/.picoclaw/config.json 
 (
     for i in {0..60}; do
         if [ -f "/config/.picoclaw/config.json" ]; then
