@@ -31,7 +31,12 @@ sync_desktop_file "$SRC" "/config/Desktop/ModelRelay.desktop"
 # Add modelrelay model to picoclaw's config
 # /config/picoclaw/config.json 
 (
-    sleep 15
-    add_model_if_missing "/config/.picoclaw/config.json"
-    chown abc:abc "/config/.picoclaw/config.json"
+    for i in {0..60}; do
+        if [ -f "/config/.picoclaw/config.json" ]; then
+            add_model_if_missing "/config/.picoclaw/config.json"
+            chown abc:abc "/config/.picoclaw/config.json"
+            break
+        fi
+        sleep 5
+    done
 ) &
