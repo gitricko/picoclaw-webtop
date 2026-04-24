@@ -1,7 +1,7 @@
 ARG PICOCLAW_VERSION=v0.2.6
 ARG OLLAMA_VERSION=0.20.4
 ARG NODE_VERSION=24
-ARG MODELRELAY_VERSION=1.14.0
+ARG MODELRELAY_VERSION=1.15.1
 
 # Use the official picoclaw image to get the binary
 FROM sipeed/picoclaw:${PICOCLAW_VERSION} AS picoclaw-bin
