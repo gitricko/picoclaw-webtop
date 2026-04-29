@@ -1,7 +1,7 @@
 ARG PICOCLAW_VERSION=v0.2.6
-ARG OLLAMA_VERSION=0.20.4
+ARG OLLAMA_VERSION=0.21.0
 ARG NODE_VERSION=24
-ARG MODELRELAY_VERSION=1.15.1
+ARG MODELRELAY_VERSION=1.16.0
 
 # Use the official picoclaw image to get the binary
 FROM sipeed/picoclaw:${PICOCLAW_VERSION} AS picoclaw-bin
@@ -15,6 +15,9 @@ FROM node:${NODE_VERSION}-slim AS node-bin
 
 # Use your preferred Webtop flavor as the base (e.g., Ubuntu, Alpine)
 FROM lscr.io/linuxserver/webtop:ubuntu-mate
+
+# Install help utilities and clean up apt cache to reduce image size
+RUN apt-get update && apt-get install -y htop && rm -rf /var/lib/apt/lists/*
 
 # Copy Node.js binaries and libraries
 COPY --from=node-bin --chown=abc:abc /usr/local/bin/node /usr/local/bin/
@@ -30,17 +33,13 @@ COPY --from=ollama-bin --chown=abc:abc /usr/bin/ollama /usr/local/bin/ollama
 
 # Start Ollama to start automatically when the desktop loads,
 RUN mkdir -p /custom-cont-init.d
-COPY --chown=abc:abc start-3-ollama.sh /custom-cont-init.d/start-ollama.sh
-
-COPY --chown=abc:abc common.sh /custom-cont-init.d/common.sh
-COPY --chown=abc:abc PicoClaw.desktop /custom-cont-init.d/PicoClaw.desktop
-COPY --chown=abc:abc start-1-picoclaw.sh /custom-cont-init.d/start-1-picoclaw.sh
+COPY --chown=abc:abc *.desktop /custom-cont-init.d
+COPY --chown=abc:abc *.sh /custom-cont-init.d
 
 # Install ModelRelay and start automatically when desktop loads
+ARG MODELRELAY_VERSION
 RUN npm install -g modelrelay@${MODELRELAY_VERSION} && \
+    npm cache clean --force && \
     chown -R abc:abc /usr/local/lib/node_modules/modelrelay /usr/local/bin/modelrelay
-COPY --chown=abc:abc ModelRelay.desktop /custom-cont-init.d/ModelRelay.desktop
-COPY --chown=abc:abc start-2-modelrelay.sh /custom-cont-init.d/start-2-modelrelay.sh
 
-EXPOSE 11434
-
+EXPOSE 18800 7352
