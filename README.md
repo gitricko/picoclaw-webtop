@@ -58,6 +58,10 @@ Perfect for:
 
    <img width="500" alt="launch-codespace" src="./docs/launch-webtop-via-ports.png">
 
+4. Open the built-in code-server IDE:
+- In GitHub Codespaces: forward port `8888` in the Ports panel and open the private URL.
+- Locally: open `http://localhost:8888`.
+
 5. Inside the WebTop desktop:
 - PicoClaw's WebUI process is auto-started in terminal. (If not, start it using the PicoClaw desktop-icon)
 - You should see the `dashboard token` in the terminal. Login with the token via `http://localhost:18800` in WebTop
@@ -76,9 +80,21 @@ You now have a **fully working PicoClaw instance running 100% in the cloud.**
 - **Persistent config** — if docker volume backup and restore after Codespace recreation
 - **Easy backup/restore** — `make backup` / `make restore`
 - **One-command everything** — powerful Makefile + clean `docker-compose.yml`
+- **Built-in code-server IDE** — browser-based VS Code on port `8888`
 - **Auto-start Ollama** — custom init script on WebTop boot (if you want to use cloud credits)
 - **Colima / local Docker support** ready
 - **Built-in ModelRelay** — intelligent API proxy for easy model switching
+
+## 🧑‍💻 Built-in code-server IDE
+
+This image includes `code-server` and exposes it on port `8888`.
+
+- `code-server` is installed automatically in the container.
+- The desktop launcher `CodeServer` starts it inside the WebTop environment.
+- In Codespaces, use the forwarded private port `8888`.
+- Locally, open `http://localhost:8888`.
+
+> Note: this setup uses `code-server --auth none`, so keep port `8888` private. In Codespaces, private port forwarding protects it. For local production use, secure it with an authenticated reverse proxy or firewall.
 
 ## 🔄 ModelRelay: Intelligent API Proxy
 
